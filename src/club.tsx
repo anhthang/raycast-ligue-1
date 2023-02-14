@@ -3,7 +3,7 @@ import { Club } from "./types";
 import { getClubs } from "./api";
 import SeasonDropdown from "./components/season_dropdown";
 import { Action, ActionPanel, Grid, Icon } from "@raycast/api";
-import ClubDetails from "./components/club";
+import ClubSquad from "./components/squad";
 
 export default function Club() {
   const [clubs, setClubs] = useState<Club[]>();
@@ -30,18 +30,18 @@ export default function Club() {
       {clubs?.map((club) => {
         return (
           <Grid.Item
-            key={club.name}
+            key={club.id}
             title={club.name}
             content={club.logo}
-            // actions={
-            //   <ActionPanel>
-            //     <Action.Push
-            //       title="Club Profile"
-            //       icon={Icon.Sidebar}
-            //       target={<ClubDetails {...club} />}
-            //     />
-            //   </ActionPanel>
-            // }
+            actions={
+              <ActionPanel>
+                <Action.Push
+                  title="Club Squad"
+                  icon={Icon.Sidebar}
+                  target={<ClubSquad {...club} />}
+                />
+              </ActionPanel>
+            }
           />
         );
       })}

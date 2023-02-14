@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { showToast, Toast } from "@raycast/api";
-import { Club, FixturesAndResults, Standing } from "../types";
+import { Club, FixturesAndResults, Player, Standing } from "../types";
 
 import xpath from "xpath-html";
 
@@ -38,6 +38,7 @@ export const getClubs = async (seasonId: string): Promise<Club[]> => {
         .getText();
 
       return {
+        id: url.replace("/clubs?id=", ""),
         name,
         logo: `https://www.ligue1.com${logo}`,
         url: `https://www.ligue1.com${url}`,
@@ -117,8 +118,6 @@ export const getMatches = async (
     url: `https://www.ligue1.com/fixtures-results?seasonId=${seasonId}&StatsActiveTab=0`,
   };
 
-  console.log(config.url);
-
   try {
     const { data } = await axios(config);
 
@@ -170,6 +169,62 @@ export const getMatches = async (
   } catch (e) {
     showFailureToast();
 
+    return [];
+  }
+};
+
+export const getSquad = async (clubId: string): Promise<Player[]> => {
+  const config: AxiosRequestConfig = {
+    method: "get",
+    url: `https://www.ligue1.com/clubs/squad?id=${clubId}`,
+  };
+
+  console.log(config.url);
+
+  try {
+    const { data } = await axios(config);
+
+    const nodes = xpath
+      .fromPageSource(data)
+      .findElements("//a[contains(@class, 'SquadTeamTable-flip-card')]");
+
+    return nodes.map((node: any) => {
+      const name = xpath
+        .fromNode(node)
+        .findElement("//span[@class='SquadTeamTable-playerName']")
+        .getText();
+      const position = xpath
+        .fromNode(node)
+        .findElement("//span[@class='SquadTeamTable-position']")
+        .getText();
+      const number = xpath
+        .fromNode(node)
+        .findElement("//div[contains(@class, 'SquadTeamTable-detail--number')]")
+        .getText()
+        .trim();
+
+      const img = xpath
+        .fromNode(node)
+        .findElement("//img[contains(@class, 'SquadTeamTable-player-picture')]")
+        .getAttribute("src");
+
+      const link = xpath
+        .fromNode(node)
+        .findElement("//a[contains(@class, 'SquadTeamTable-link')]")
+        .getAttribute("href");
+
+      return {
+        id: link.replace("/player?id=", ""),
+        name,
+        position,
+        number,
+        img: `https://www.ligue1.com${img}`,
+      };
+    });
+  } catch (e) {
+    console.log(e);
+
+    showFailureToast();
     return [];
   }
 };

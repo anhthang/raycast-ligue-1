@@ -14,7 +14,16 @@ export interface FixturesAndResults {
 }
 
 export interface Club {
+  id: string;
   name: string;
   logo: string;
   url: string;
+}
+
+export interface Player {
+  id: string;
+  name: string;
+  img: string;
+  position: string;
+  number: string;
 }
