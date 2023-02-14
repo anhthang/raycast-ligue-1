@@ -36,7 +36,7 @@ export default function Fixture() {
         [`Matchday ${matchday}`]: data,
       });
       showToast({
-        title: `Matchday ${matchday} Added`,
+        title: "Matchday Added",
         style: Toast.Style.Success,
       });
     });
@@ -50,21 +50,19 @@ export default function Fixture() {
         <SeasonDropdown selected={season} onSelect={setSeason} />
       }
     >
-      {Object.entries(fixtures || {}).map(([date, results]) => {
+      {Object.entries(fixtures || {}).map(([matchday, results]) => {
         const days: Fixtures = groupBy(results, "day");
 
         return Object.entries(days).map(([day, matches]) => {
           return (
-            <List.Section key={`${date} - ${day}`} title={`${date} - ${day}`}>
+            <List.Section key={day} title={day}>
               {matches.map((match) => {
-                // let icon: Image.ImageLike;
-                // if (match.status.toLowerCase().includes("half")) {
-                //   icon = { source: Icon.Livestream, tintColor: Color.Red };
-                // } else if (match.status === "FullTime") {
-                //   icon = { source: Icon.CheckCircle, tintColor: Color.Green };
-                // } else {
-                //   icon = Icon.Clock;
-                // }
+                let icon: Image.ImageLike;
+                if (match.title.includes("-")) {
+                  icon = { source: Icon.CheckCircle, tintColor: Color.Green };
+                } else {
+                  icon = Icon.Clock;
+                }
 
                 // const accessories: List.Item.Accessory[] = [
                 //   { text: match.venue.name },
@@ -80,7 +78,7 @@ export default function Fixture() {
                     //     ? `${match.home_team.nickname} - ${match.away_team.nickname}`
                     //     : `${match.home_team.nickname} ${match.home_score} - ${match.away_score} ${match.away_team.nickname}`
                     // }
-                    // icon={icon}
+                    icon={icon}
                     // accessories={accessories}
                     actions={
                       <ActionPanel>

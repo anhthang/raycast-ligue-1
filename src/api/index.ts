@@ -65,31 +65,39 @@ export const getTable = async (seasonId: string): Promise<Standing[]> => {
       .findElements('//div[@class="classement-table-body"]');
     const rows = xpath.fromNode(table).findElements("//li");
 
-    const ranking = rows.map((node: any) => {
-      const pos = xpath
-        .fromNode(node)
-        .findElement("//div[contains(@class, 'GeneralStats-item--position')]");
-      const ranking = pos.getAttribute("class").split(" ")[2];
-      const position = pos.getText();
+    const ranking = rows.map((row: any) => {
+      const stats = xpath
+        .fromNode(row)
+        .findElements("//div[contains(@class, 'GeneralStats-item')]");
+      const ranking = stats[0].getAttribute("class").split(" ")[2];
+      const position = stats[0].getText();
+
       const name = xpath
-        .fromNode(node)
+        .fromNode(stats[1])
         .findElement("//span[contains(@class, 'GeneralStats-clubName')]")
         .getText();
-      const points = xpath
-        .fromNode(node)
-        .findElement("//div[contains(@class, 'GeneralStats-item--points')]")
-        .getText();
+
+      const img = xpath
+        .fromNode(stats[1])
+        .findElement("//img")
+        .getAttribute("data-src");
+
+      const points = stats[2].getText();
+      const played = stats[3].getText();
+      const won = stats[4].getText();
+      const drawn = stats[5].getText();
+      const lost = stats[6].getText();
+      const goals_for = stats[7].getText();
+      const goals_against = stats[8].getText();
+      const goal_difference = stats[9].getText();
+
       const forms = xpath
-        .fromNode(node)
+        .fromNode(stats[10])
         .findElements("//span[contains(@class, 'circle')]")
         .map((form: any) => {
           return form.getAttribute("class").replace("circle", "").trim();
         });
 
-      const img = xpath
-        .fromNode(node)
-        .findElement("//img")
-        .getAttribute("data-src");
       const indexOf = img.indexOf("?");
 
       return {
@@ -98,6 +106,13 @@ export const getTable = async (seasonId: string): Promise<Standing[]> => {
         position,
         ranking,
         points,
+        played,
+        won,
+        drawn,
+        lost,
+        goals_for,
+        goals_against,
+        goal_difference,
         forms,
       };
     });

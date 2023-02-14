@@ -4,6 +4,13 @@ export interface Standing {
   position: string;
   ranking: string;
   points: string;
+  played: string;
+  won: string;
+  drawn: string;
+  lost: string;
+  goals_for: string;
+  goals_against: string;
+  goal_difference: string;
   forms: string[];
 }
 
