@@ -126,15 +126,29 @@ export const getTable = async (seasonId: string): Promise<Standing[]> => {
 };
 
 export const getMatches = async (
-  seasonId: string
+  seasonId: string,
+  matchDay?: number
 ): Promise<FixturesAndResults[]> => {
+  const params = {
+    seasonId,
+    StatsActiveTab: 0,
+    matchDay,
+  };
+
   const config: AxiosRequestConfig = {
     method: "GET",
-    url: `https://www.ligue1.com/fixtures-results?seasonId=${seasonId}&StatsActiveTab=0`,
+    url: "https://www.ligue1.com/fixtures-results",
+    params,
   };
 
   try {
     const { data } = await axios(config);
+
+    const matchday = xpath
+      .fromPageSource(data)
+      .findElement("//a[contains(@class, 'Scorebar-journeyItem--active')]")
+      .getText()
+      .trim();
 
     const days = xpath
       .fromPageSource(data)
@@ -153,8 +167,9 @@ export const getMatches = async (
           .fromNode(row)
           .findElements("//div[contains(@class, 'Calendar-clubWrapper')]/span")
           .map((n: any) => n.firstChild.data);
-        const left = clubs[0];
-        const right = clubs[clubs.length / 2];
+
+        const home = clubs[0];
+        const away = clubs[clubs.length / 2];
 
         const result = xpath
           .fromNode(row)
@@ -164,7 +179,25 @@ export const getMatches = async (
           .map((e: any) => e.firstChild && e.firstChild.data)
           .filter((e: string) => !!e);
 
-        const title = [left, ...result, right].join(" ");
+        let status = "upcoming";
+        if (result[1] === "-") {
+          status = "completed";
+        }
+
+        let title;
+        let subtitle;
+
+        if (result.length === 1) {
+          if (result[0] == "--:--") {
+            title = "TBC";
+          } else {
+            title = result[0];
+          }
+          subtitle = `${home} - ${away}`;
+        } else {
+          title = "";
+          subtitle = [home, ...result, away].join(" ");
+        }
 
         const url = xpath
           .fromNode(row)
@@ -175,7 +208,10 @@ export const getMatches = async (
         fixtures.push({
           day,
           title,
+          subtitle,
           url: `https://www.ligue1.com${url}`,
+          status,
+          matchday: Number(matchday.replace("R", "")),
         });
       });
     });

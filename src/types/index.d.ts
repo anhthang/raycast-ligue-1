@@ -17,7 +17,10 @@ export interface Standing {
 export interface FixturesAndResults {
   day: string;
   title: string;
+  subtitle: string | undefined;
   url: string;
+  status: string;
+  matchday: number;
 }
 
 export interface Club {
