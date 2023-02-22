@@ -190,6 +190,7 @@ export const getMatches = async (
         if (result.length === 1) {
           if (result[0] == "--:--") {
             title = "TBC";
+            status = "unplanned";
           } else {
             title = result[0];
           }

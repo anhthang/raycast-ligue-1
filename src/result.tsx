@@ -60,15 +60,13 @@ export default function Fixture() {
                 case "completed":
                   icon = { source: Icon.CheckCircle, tintColor: Color.Green };
                   break;
+                case "unplanned":
+                  icon = Icon.Clock;
+                  break;
                 default:
-                  icon = { source: Icon.Clock };
+                  icon = Icon.Calendar;
                   break;
               }
-
-              // const accessories: List.Item.Accessory[] = [
-              //   { text: match.venue.name },
-              //   { icon: "stadium.svg" },
-              // ];
 
               return (
                 <List.Item
@@ -76,7 +74,6 @@ export default function Fixture() {
                   title={match.title}
                   subtitle={match.subtitle}
                   icon={icon}
-                  // accessories={accessories}
                   actions={
                     <ActionPanel>
                       <Action.OpenInBrowser url={match.url} />
