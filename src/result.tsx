@@ -73,6 +73,7 @@ export default function Fixture() {
                   key={match.url}
                   title={match.title}
                   subtitle={match.subtitle}
+                  keywords={[match.subtitle]}
                   icon={icon}
                   actions={
                     <ActionPanel>

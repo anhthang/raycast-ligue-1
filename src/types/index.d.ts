@@ -17,7 +17,7 @@ export interface Standing {
 export interface FixturesAndResults {
   day: string;
   title: string;
-  subtitle: string | undefined;
+  subtitle: string;
   url: string;
   status: string;
   matchday: number;
