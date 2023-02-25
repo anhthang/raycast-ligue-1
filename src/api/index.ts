@@ -171,6 +171,8 @@ export const getMatches = async (
         const home = clubs[0];
         const away = clubs[clubs.length / 2];
 
+        const classes = row.getAttribute("class");
+
         const result = xpath
           .fromNode(row)
           .findElements(
@@ -179,8 +181,8 @@ export const getMatches = async (
           .map((e: any) => e.firstChild && e.firstChild.data)
           .filter((e: string) => !!e);
 
-        let status = "upcoming";
-        if (result[1] === "-") {
+        let status = classes.includes("live") ? "live" : "upcoming";
+        if (status !== "live" && result[1] === "-") {
           status = "completed";
         }
 
