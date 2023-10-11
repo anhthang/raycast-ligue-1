@@ -8,7 +8,7 @@ function showFailureToast() {
   showToast(
     Toast.Style.Failure,
     "Something went wrong",
-    "Please try again later"
+    "Please try again later",
   );
 }
 
@@ -127,7 +127,7 @@ export const getTable = async (seasonId: string): Promise<Standing[]> => {
 
 export const getMatches = async (
   seasonId: string,
-  matchDay?: number
+  matchDay?: number,
 ): Promise<FixturesAndResults[]> => {
   const params = {
     seasonId,
@@ -176,7 +176,7 @@ export const getMatches = async (
         const result = xpath
           .fromNode(row)
           .findElements(
-            "//div[contains(@class, 'Calendar-clubResult')]/span/span"
+            "//div[contains(@class, 'Calendar-clubResult')]/span/span",
           )
           .map((e: any) => e.firstChild && e.firstChild.data)
           .filter((e: string) => !!e);

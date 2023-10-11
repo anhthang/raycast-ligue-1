@@ -1,4 +1,4 @@
 declare module "xpath-html" {
-  function fromPageSource(html: any);
-  function fromNode(html: any);
+  function fromPageSource(html: string);
+  function fromNode(html: string);
 }
