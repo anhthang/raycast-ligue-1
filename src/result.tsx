@@ -99,7 +99,9 @@ export default function Fixture() {
                   icon={icon}
                   actions={
                     <ActionPanel>
-                      {/* <Action.OpenInBrowser url={match.url} /> */}
+                      <Action.OpenInBrowser
+                        url={`https://ligue1.com/match-sheet/${match.matchId}`}
+                      />
                       <ActionPanel.Section title="Game Week">
                         {match.gameWeekNumber > 1 && (
                           <Action
