@@ -1,19 +1,3 @@
-export interface FixturesAndResults {
-  day: string;
-  title: string;
-  subtitle: string;
-  url: string;
-  status: string;
-  matchday: number;
-}
-
-export interface Club {
-  id: string;
-  name: string;
-  logo: string;
-  url: string;
-}
-
 export interface Player {
   id: string;
   name: string;
@@ -26,6 +10,14 @@ export interface L1Standings {
   competitionType: string;
   season: number;
   standings: { [key: string]: Standing };
+}
+
+export interface L1Matches {
+  matches: Match[];
+}
+
+export interface L1GameWeeks {
+  nearestGameWeeks: NearestGameWeeks;
 }
 
 export interface Standing {
@@ -46,6 +38,25 @@ export interface Standing {
   allSeasonResults: unknown[];
   higherWinsInARow: number;
   qualifiedFor?: string;
+}
+
+export interface Match {
+  matchId: string;
+  championshipId: number;
+  gameWeekNumber: number;
+  date: Date;
+  dateTimeUnknown: boolean;
+  period: string;
+  isLive: boolean;
+  broadcasters: Broadcasters;
+  home: Club;
+  away: Club;
+}
+
+export interface Club {
+  clubId: string;
+  score: number;
+  clubIdentity: ClubIdentity;
 }
 
 export interface ClubIdentity {
@@ -71,4 +82,18 @@ export interface Logo {
   small: string;
   medium: string;
   large: string;
+}
+
+export interface NearestGameWeeks {
+  currentGameWeek: TGameWeek;
+  nextGameWeek: TGameWeek;
+}
+
+export interface TGameWeek {
+  gameWeekNumber: number;
+  matchesIds: string[];
+  startDate: Date;
+  endDate: Date;
+  displayEndDate: Date;
+  lastRegularMatchDate: Date;
 }

@@ -3,8 +3,10 @@ import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { showToast, Toast } from "@raycast/api";
 import {
   Club,
-  FixturesAndResults,
+  L1GameWeeks,
+  L1Matches,
   L1Standings,
+  Match,
   Player,
   Standing,
 } from "../types";
@@ -79,104 +81,42 @@ export const getTable = async (season: string): Promise<Standing[]> => {
 };
 
 export const getMatches = async (
-  seasonId: string,
-  matchDay?: number,
-): Promise<FixturesAndResults[]> => {
-  const params = {
-    seasonId,
-    StatsActiveTab: 0,
-    matchDay,
-  };
-
+  season: string,
+  gameweek?: number,
+): Promise<Match[]> => {
   const config: AxiosRequestConfig = {
     method: "GET",
-    url: "https://www.ligue1.com/fixtures-results",
-    params,
+    url: `https://ma-api.ligue1.fr/championship-matches/championship/1/game-week/${gameweek}`,
+    params: {
+      season,
+    },
   };
 
   try {
-    const { data } = await axios(config);
+    const { data }: AxiosResponse<L1Matches> = await axios(config);
 
-    const matchday = xpath
-      .fromPageSource(data)
-      .findElement("//a[contains(@class, 'Scorebar-journeyItem--active')]")
-      .getText()
-      .trim();
-
-    const days = xpath
-      .fromPageSource(data)
-      .findElements("//div[contains(@class, 'calendar-widget-day')]");
-
-    const fixtures: FixturesAndResults[] = [];
-
-    days.forEach((node: any) => {
-      const day = node.firstChild.data;
-      const rows = xpath
-        .fromNode(node.nextSibling.nextSibling)
-        .findElements("//li[contains(@class, 'match-result')]");
-
-      rows.forEach((row: any) => {
-        const clubs = xpath
-          .fromNode(row)
-          .findElements("//div[contains(@class, 'Calendar-clubWrapper')]/span")
-          .map((n: any) => n.firstChild.data);
-
-        const home = clubs[0];
-        const away = clubs[clubs.length / 2];
-
-        const classes = row.getAttribute("class");
-
-        const result = xpath
-          .fromNode(row)
-          .findElements(
-            "//div[contains(@class, 'Calendar-clubResult')]/span/span",
-          )
-          .map((e: any) => e.firstChild && e.firstChild.data)
-          .filter((e: string) => !!e);
-
-        let status = classes.includes("live") ? "live" : "upcoming";
-        if (status !== "live" && result[1] === "-") {
-          status = "completed";
-        }
-
-        let title;
-        let subtitle;
-
-        if (result.length === 1) {
-          if (result[0] == "--:--") {
-            title = "TBC";
-            status = "unplanned";
-          } else {
-            title = result[0];
-          }
-          subtitle = `${home} - ${away}`;
-        } else {
-          title = "";
-          subtitle = [home, ...result, away].join(" ");
-        }
-
-        const url = xpath
-          .fromNode(row)
-          .findElement("//div[contains(@class, 'discussion')]/a")
-          .getAttribute("href")
-          .trim();
-
-        fixtures.push({
-          day,
-          title,
-          subtitle,
-          url: `https://www.ligue1.com${url}`,
-          status,
-          matchday: Number(matchday.replace("R", "")),
-        });
-      });
-    });
-
-    return fixtures;
+    return data.matches;
   } catch (e) {
     showFailureToast();
 
     return [];
+  }
+};
+
+export const getGameWeeks = async (): Promise<number> => {
+  const config: AxiosRequestConfig = {
+    method: "GET",
+    url: "https://ma-api.ligue1.fr/championship-calendar/1/nearest-game-weeks",
+  };
+
+  try {
+    const { data }: AxiosResponse<L1GameWeeks> = await axios(config);
+
+    return data.nearestGameWeeks.currentGameWeek.gameWeekNumber;
+  } catch (e) {
+    showFailureToast();
+
+    return 1;
   }
 };
 
