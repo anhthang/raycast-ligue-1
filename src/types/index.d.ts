@@ -42,8 +42,8 @@ export interface Standing {
   gameWeekStartingRank: number;
   rank: number;
   rankDelta: number;
-  seasonResults: any[];
-  allSeasonResults: any[];
+  seasonResults: unknown[];
+  allSeasonResults: unknown[];
   higherWinsInARow: number;
   qualifiedFor?: string;
 }

@@ -36,23 +36,23 @@
     }
   ],
   "dependencies": {
-    "@raycast/api": "^1.59.0",
-    "axios": "^1.5.1",
-    "json2md": "^2.0.0",
+    "@raycast/api": "^1.79.1",
+    "axios": "^1.7.2",
+    "json2md": "^2.0.1",
     "lodash.groupby": "^4.6.0",
     "xpath-html": "^1.0.3"
   },
   "devDependencies": {
-    "@types/json2md": "^1.5.2",
-    "@types/lodash.groupby": "^4.6.7",
-    "@types/node": "~20.8.4",
-    "@types/react": "^18.2.28",
-    "@typescript-eslint/eslint-plugin": "^6.7.5",
-    "@typescript-eslint/parser": "^6.7.5",
-    "eslint": "^8.51.0",
-    "eslint-config-prettier": "^9.0.0",
-    "react-devtools": "^4.28.4",
-    "typescript": "^5.2.2"
+    "@types/json2md": "^1.5.4",
+    "@types/lodash.groupby": "^4.6.9",
+    "@types/node": "~20.14.12",
+    "@types/react": "^18.3.3",
+    "@typescript-eslint/eslint-plugin": "^7.17.0",
+    "@typescript-eslint/parser": "^7.17.0",
+    "eslint": "8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "react-devtools": "^5.2.0",
+    "typescript": "^5.5.4"
   },
   "scripts": {
     "build": "ray build -e dist",
