@@ -1,6 +1,12 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { showToast, Toast } from "@raycast/api";
-import { Club, FixturesAndResults, Player, Standing } from "../types";
+import {
+  Club,
+  FixturesAndResults,
+  L1Standings,
+  Player,
+  Standing,
+} from "../types";
 
 import xpath from "xpath-html";
 
@@ -51,73 +57,19 @@ export const getClubs = async (seasonId: string): Promise<Club[]> => {
   }
 };
 
-export const getTable = async (seasonId: string): Promise<Standing[]> => {
+export const getTable = async (season: string): Promise<Standing[]> => {
   const config: AxiosRequestConfig = {
     method: "GET",
-    url: `https://www.ligue1.com/ranking?seasonId=${seasonId}&StatsActiveTab=0`,
+    url: "https://ma-api.ligue1.fr/championship-standings/1/general",
+    params: {
+      season,
+    },
   };
 
   try {
-    const { data } = await axios(config);
+    const { data }: AxiosResponse<L1Standings> = await axios(config);
 
-    const table = xpath
-      .fromPageSource(data)
-      .findElements('//div[@class="classement-table-body"]');
-    const rows = xpath.fromNode(table).findElements("//li");
-
-    const ranking = rows.map((row: any) => {
-      const stats = xpath
-        .fromNode(row)
-        .findElements("//div[contains(@class, 'GeneralStats-item')]");
-      const ranking = stats[0].getAttribute("class").split(" ")[2];
-      const position = stats[0].getText();
-
-      const name = xpath
-        .fromNode(stats[1])
-        .findElement("//span[contains(@class, 'GeneralStats-clubName')]")
-        .getText();
-
-      const img = xpath
-        .fromNode(stats[1])
-        .findElement("//img")
-        .getAttribute("data-src");
-
-      const points = stats[2].getText();
-      const played = stats[3].getText();
-      const won = stats[4].getText();
-      const drawn = stats[5].getText();
-      const lost = stats[6].getText();
-      const goals_for = stats[7].getText();
-      const goals_against = stats[8].getText();
-      const goal_difference = stats[9].getText();
-
-      const forms = xpath
-        .fromNode(stats[10])
-        .findElements("//span[contains(@class, 'circle')]")
-        .map((form: any) => {
-          return form.getAttribute("class").replace("circle", "").trim();
-        });
-
-      const indexOf = img.indexOf("?");
-
-      return {
-        name,
-        logo: "https://www.ligue1.com" + img.substr(0, indexOf),
-        position,
-        ranking,
-        points,
-        played,
-        won,
-        drawn,
-        lost,
-        goals_for,
-        goals_against,
-        goal_difference,
-        forms,
-      };
-    });
-
-    return ranking;
+    return Object.values(data.standings);
   } catch (e) {
     showFailureToast();
 
