@@ -18,10 +18,11 @@ function showFailureToast() {
   );
 }
 
-export const getClubs = async (season: string): Promise<ClubIdentity[]> => {
+export const getClubs = async (str: string): Promise<ClubIdentity[]> => {
+  const [season, competition] = str.split("_");
   const config: AxiosRequestConfig = {
     method: "GET",
-    url: "https://ma-api.ligue1.fr/championship-standings/1/general",
+    url: `https://ma-api.ligue1.fr/championship-standings/${competition}/general`,
     params: { season },
   };
 
@@ -37,13 +38,12 @@ export const getClubs = async (season: string): Promise<ClubIdentity[]> => {
   }
 };
 
-export const getTable = async (season: string): Promise<Standing[]> => {
+export const getTable = async (str: string): Promise<Standing[]> => {
+  const [season, competition] = str.split("_");
   const config: AxiosRequestConfig = {
     method: "GET",
-    url: "https://ma-api.ligue1.fr/championship-standings/1/general",
-    params: {
-      season,
-    },
+    url: `https://ma-api.ligue1.fr/championship-standings/${competition}/general`,
+    params: { season },
   };
 
   try {
@@ -58,12 +58,14 @@ export const getTable = async (season: string): Promise<Standing[]> => {
 };
 
 export const getMatches = async (
-  season: string,
+  str: string,
   gameweek?: number,
 ): Promise<Match[]> => {
+  const [season, competition] = str.split("_");
+
   const config: AxiosRequestConfig = {
     method: "GET",
-    url: `https://ma-api.ligue1.fr/championship-matches/championship/1/game-week/${gameweek}`,
+    url: `https://ma-api.ligue1.fr/championship-matches/championship/${competition}/game-week/${gameweek}`,
     params: {
       season,
     },
@@ -80,10 +82,11 @@ export const getMatches = async (
   }
 };
 
-export const getGameWeeks = async (): Promise<number> => {
+export const getGameWeeks = async (str: string): Promise<number> => {
+  const [, competition] = str.split("_");
   const config: AxiosRequestConfig = {
     method: "GET",
-    url: "https://ma-api.ligue1.fr/championship-calendar/1/nearest-game-weeks",
+    url: `https://ma-api.ligue1.fr/championship-calendar/${competition}/nearest-game-weeks`,
   };
 
   try {

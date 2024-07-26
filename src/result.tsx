@@ -17,11 +17,11 @@ import { format } from "date-fns";
 
 export default function Fixture() {
   const [fixtures, setFixtures] = useState<Match[]>();
-  const [season, setSeason] = useState<string>("2024");
+  const [season, setSeason] = useState<string>("2024_1");
   const [gameWeek, setGameWeek] = useState<number>(1);
 
   useEffect(() => {
-    getGameWeeks().then((currentGameWeek) => {
+    getGameWeeks(season).then((currentGameWeek) => {
       setGameWeek(currentGameWeek);
     });
   }, [season]);
