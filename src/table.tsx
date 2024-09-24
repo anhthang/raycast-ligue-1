@@ -1,27 +1,22 @@
-import { List, Icon, Image, Color, ActionPanel, Action } from "@raycast/api";
-import { useEffect, useState } from "react";
-import SeasonDropdown from "./components/season_dropdown";
+import { Action, ActionPanel, Color, Icon, Image, List } from "@raycast/api";
+import { usePromise } from "@raycast/utils";
+import { useState } from "react";
 import { getTable } from "./api";
-import { Standing } from "./types";
+import SeasonDropdown from "./components/season_dropdown";
 
 export default function GetTables() {
-  const [table, setTable] = useState<Standing[]>();
   const [competition, setCompetition] = useState<string>("");
   const [showStats, setShowStats] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (competition) {
-      setTable(undefined);
-      getTable(competition).then((data) => {
-        setTable(data);
-      });
-    }
-  }, [competition]);
+  const { data: table, isLoading } = usePromise(
+    async (competition) => (competition ? await getTable(competition) : []),
+    [competition],
+  );
 
   return (
     <List
       throttle
-      isLoading={!table}
+      isLoading={isLoading}
       searchBarAccessory={
         <SeasonDropdown selected={competition} onSelect={setCompetition} />
       }

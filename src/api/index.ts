@@ -1,5 +1,6 @@
+import { showFailureToast } from "@raycast/utils";
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-import { showToast, Toast } from "@raycast/api";
+import sortBy from "lodash.sortby";
 import {
   ClubIdentity,
   L1GameWeeks,
@@ -8,15 +9,6 @@ import {
   Match,
   Standing,
 } from "../types";
-import sortBy from "lodash.sortby";
-
-function showFailureToast() {
-  showToast(
-    Toast.Style.Failure,
-    "Something went wrong",
-    "Please try again later",
-  );
-}
 
 export const getClubs = async (str: string): Promise<ClubIdentity[]> => {
   const [season, competition] = str.split("_");
@@ -32,7 +24,7 @@ export const getClubs = async (str: string): Promise<ClubIdentity[]> => {
     const clubs = Object.values(data.standings).map((s) => s.clubIdentity);
     return sortBy(clubs, "name");
   } catch (e) {
-    showFailureToast();
+    showFailureToast(e);
 
     return [];
   }
@@ -51,7 +43,7 @@ export const getTable = async (str: string): Promise<Standing[]> => {
 
     return Object.values(data.standings);
   } catch (e) {
-    showFailureToast();
+    showFailureToast(e);
 
     return [];
   }
@@ -76,7 +68,7 @@ export const getMatches = async (
 
     return data.matches;
   } catch (e) {
-    showFailureToast();
+    showFailureToast(e);
 
     return [];
   }
@@ -94,7 +86,7 @@ export const getGameWeeks = async (str: string): Promise<number> => {
 
     return data.nearestGameWeeks.currentGameWeek.gameWeekNumber;
   } catch (e) {
-    showFailureToast();
+    showFailureToast(e);
 
     return 1;
   }
