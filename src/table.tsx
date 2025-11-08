@@ -1,4 +1,4 @@
-import { Color, List } from "@raycast/api";
+import { Color, Icon, Image, List } from "@raycast/api";
 import { usePromise } from "@raycast/utils";
 import { useState } from "react";
 import { getTable } from "./api";
@@ -22,22 +22,22 @@ export default function GetTables() {
       isShowingDetail={true}
     >
       {table?.map((team) => {
-        // let icon: Image.ImageLike = {
-        //   source: Icon.Dot,
-        //   tintColor: Color.SecondaryText,
-        // };
+        let icon: Image.ImageLike = {
+          source: Icon.Dot,
+          tintColor: Color.SecondaryText,
+        };
 
-        // if (team.rank < team.gameWeekStartingRank) {
-        //   icon = {
-        //     source: Icon.ChevronUpSmall,
-        //     tintColor: Color.Green,
-        //   };
-        // } else if (team.rank > team.gameWeekStartingRank) {
-        //   icon = {
-        //     source: Icon.ChevronDownSmall,
-        //     tintColor: Color.Red,
-        //   };
-        // }
+        if (team.rank < team.gameWeekStartingRank) {
+          icon = {
+            source: Icon.ChevronUpSmall,
+            tintColor: Color.Green,
+          };
+        } else if (team.rank > team.gameWeekStartingRank) {
+          icon = {
+            source: Icon.ChevronDownSmall,
+            tintColor: Color.Red,
+          };
+        }
 
         const accessories: List.Item.Accessory[] = [
           {
@@ -45,8 +45,10 @@ export default function GetTables() {
               color: Color.PrimaryText,
               value: team.points.toString(),
             },
-            // icon,
             tooltip: "Points",
+          },
+          {
+            icon,
           },
         ];
 

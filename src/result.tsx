@@ -4,10 +4,10 @@ import { format } from "date-fns";
 import groupBy from "lodash.groupby";
 import { useState } from "react";
 import { getGameWeeks, getMatches } from "./api";
-import SeasonDropdown from "./components/season_dropdown";
+import SeasonDropdown, { seasons } from "./components/season_dropdown";
 
 export default function Fixture() {
-  const [season, setSeason] = useState<string>("2024_1");
+  const [season, setSeason] = useState<string>(`${seasons[0].season}_1`);
   const [gameWeek, setGameWeek] = useState<number>(1);
 
   usePromise(

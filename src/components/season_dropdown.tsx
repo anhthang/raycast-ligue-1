@@ -24,6 +24,8 @@ const competitions = [
   },
 ];
 
+export { seasons };
+
 export default function CompetitionDropdown(props: {
   type?: string;
   selected: string;
